@@ -1,0 +1,287 @@
+"*
+*                      ЛАБОРАТОРНА РОБОТА 2
+*
+*                   Тема: СТРУКТУРИ КЕРУВАННЯ
+*
+*  Завдання до лабораторної роботи:
+*     1. Випробуйте наведені нижче приклади, збережіть отримані результати.
+*     2. Виконайте запропоновані завдання, прокоментуйте їхнє виконання.
+*     3. Сформулюйте висновки щодо структур керування Smalltalk.
+*
+=============================================================================="
+
+
+" ------ ПОРІВНЯННЯ ОБ'ЄКТІВ"
+
+"{ Виокремте кожен з наведених нижче рядів коду і виконайте <Print it> }"
+
+    3 < 4 . "true"
+    #(1 2 3 4) = #(1 2 3 4). "true"
+    #(1 2 3 4) == #(1 2 3 4). "true"
+    (#(1 2 3 4)at:2) == (#(1 2 3 4)at:2). "true"
+    'hello' <= 'goodbye'. "false"
+    5 = (2 + 3). "true"
+    20 factorial between:1e16 and:1e20 . "true"
+    (2@12)<(100@120). "true"
+    $a isUppercase. "false"
+    ('hello' at: 1) isVowel. "false"
+    7 odd. "true"
+
+    56 = (7 * 8) "true"
+    ('Bye!' at:2) isVowel. "false"
+
+"{ Які ще об'єкти можна порівнювати? Яким чином? Знайдіть відповідні методи }
+{ за допомогою SystemBrowser'а. Наведіть приклади використання.             }
+'Відповідь: Можна порівнювати числові об'єкти(Integer,Float, LargePositiveInteger, Fraction),Symbols, String, Character, Date, Time, Duration, Колекції, Boolean. 
+Порівнювати можна завдяки таким методам: =, ==, <, >, ~=, <=, >=, compare, between: and:, hash.
+Приклади використання: 
+#(1 2 3) = #(1 2 3). ""true""
+#(1 2 3) == #(1 2 3). ""false""
+'apple' ~= 'orange'. ""true""
+10 between: 5 and: 15. ""true""
+5 compare: 5.   ""повертає 0, бо 5 = 5""
+3 hash. Поверне ціле число, 3 '
+ ------ ТЕСТУВАННЯ ОБ'ЄКТІВ
+
+{ Отримайте результати для наведених рядків коду. Запропонуйте власні приклади. }"
+
+    Smalltalk class. "SmalltalkImage"
+    Boolean superclass. "Object"
+    20 isKindOf: Number. "true"
+    20 isMemberOf: SmallInteger. "true"
+    20 factorial isMemberOf: SmallInteger. "false"
+    Number inheritsFrom: Magnitude. "true"
+    Number respondsTo: #new. "true"
+    20 respondsTo: #max:. "true"
+    3/5 respondsTo: #+. "true"
+    $A respondsTo: #between:and:. "true"
+"Приклади:
+Integer respondsTo: #+. ""true""
+3@4 respondsTo: #x. ""true""
+#(1 2 3) respondsTo: #at:. ""true""
+$z respondsTo: #isLowercase. ""true""
+15 isKindOf: Number. ""true""
+true superclass. ""Boolean""
+'hello' class. ""String""
+"
+
+ "------ ЛОГІЧНІ ВИРАЗИ
+{ Виконайте наступні приклади за допомогою <Print it> }"
+
+    5 factorial > 100 & 7 odd. "true"
+
+    (250 sqrt between: 16 and: 15) | (5 sin > 1). "false"
+
+    (195 \\ 3 = 0 | (195 \\ 7 = 0)) & (1/3 between:0 and:0.5). "true"
+" * * * "
+"{ Виконайте як нероздільний блок }"   
+    aChar := 65 asCharacter.
+    aChar >= $0 and: [ aChar <= $9 ]. "false"
+" * * * "
+"{ Відкрийте попередньо вікно Transcript. Виконайте як нероздільний блок }"   
+    aChar := 65 asCharacter.
+    aChar >= $0 and: [ Transcript show: aChar printString; cr. aChar <= $9 ]. "false, $A у Transcript виводить"
+" * * * "
+"{ Виконайте як нероздільний блок }"   
+    anInteger := (UIManager default request: 'Input number of a year' initialAnswer: '2000' title: 'Is it leap year?') asInteger.
+    ^anInteger\\4 = 0
+        and:[anInteger\\100 > 0 or:[anInteger \\ 400 = 0]]. "true, якщо число ділиться на 4. false, якщо число ділиться на 100"
+
+
+" ------ ГАЛУЖЕННЯ
+{ Виконайте наступні приклади як нероздільний блок за допомогою <Print it> }"
+" * * * "
+    3 < 4
+        ifTrue:  ['The true block executed']
+        ifFalse: ['The false block executed']. "The true block executed"
+" * * * "
+    a := 5 squared.  Transcript show:'  a=',a printString; cr.
+    b := 4 factorial.Transcript show:'  b=',b printString; cr.
+    a < b
+        ifTrue:  [max := b]
+        ifFalse: [max := a]. 
+    Transcript show:'max=',max printString; cr.
+     ^max.         "25, у Transcript виводить a=25, b=24, max=25"                        
+" * * * "
+    answer := (UIManager default confirm: 'Continue ?')
+                     ifTrue: [ 'Yes' ]  ifFalse: [ 'No' ].
+    ^answer. "Як результат виводить або Yes, або No. Все залежить на яку кнопку саме натиснути"
+" * * * "
+    a:=UIManager default request: 'Input first number:'.
+    a notNil ifTrue: [ a := a asNumber ]
+             ifFalse: [ UIManager default inform: 'Process stoped'. ^nil ].
+    b:=(UIManager default request: 'Input second number, please:') asNumber.
+    c:=UIManager default
+chooseFrom: #('circle' 'oval' 'square' 'rectangle' 'triangle') values: #(5 10 15 20 25)
+lines: #() message: 'And now third one! Choose a shape'.
+    max:= a>b ifTrue: [ a>c ifTrue:[a] ifFalse:[c]]
+              ifFalse:[ b>c ifTrue:[b] ifFalse:[c]].
+    ^'max(',a printString,',',b printString,',',c printString,')=',max printString.
+"Виводить max(перше число, яке вказали; друге число, яке вказали; і число, яке відповідає певній фігурі)"
+
+"
+ ------ ПОВТОРЕННЯ (ЦИКЛИ)
+
+{ Виконайте приклади за допомогою <Print it> } "
+
+ " Обчислення n! різними способами (не вбудованим методом) "
+
+"| n f |"
+    n:=(UIManager default request:'Input a nonegative integer') asInteger.
+    n < 0 ifTrue: [n := n negated ].
+    f := 1.
+    n timesRepeat: [ f := f*n. n := n - 1 ].
+    ^f . "Результат: ввів число 4, отримав 24"
+" * * * "
+"| n f |"
+    n:=(UIManager default request:'Input a nonegative integer') asInteger.
+    n < 0 ifTrue: [n := n negated ].
+    f := 1.
+    1 to: n do: [ :i | f := f * i ].
+    ^f . "Результат: ввів число 4, отримав 24. Такий самий результат, як у попередньому прикладі"
+" * * * "
+"| n f |"
+    n:=(UIManager default request:'Input a nonegative integer') asInteger.
+    f := 1.
+    [ n > 1 ] whileTrue: [ f := f*n. n := n - 1 ].
+    ^f. "Результат: ввів число 4, отримав 24. Такий самий результат, як у попередньому прикладі"
+
+" * * * Сума гармонійного ряду "
+
+"| n s i |"
+    n:=(UIManager default request:'Input a number (<=10)' initialAnswer: '2') asNumber.
+    s:=0. i:=0.
+    [ s > n ] whileFalse: [ i:=i+1. s:=1.0/i+s ].
+    ^i. "Результат: ввів число 2, отримав число 4"
+
+" * * *  Ще одна цікава сума "
+"| sum |"
+     sum := 0.
+     1/2 to: 1 by: 1/8 do: [ :i |
+          sum := sum + i ].
+     ^sum. "(15/4)"
+          
+" * * *  Ряд Маклорена для f(x) = sin x "
+  " 0.5 sin = 4.79425539e-1 "
+
+"| x s k y d |"
+    x:=0.5. y:=x*x negated. k:=2.
+    d:=x. s:=x.
+    [ d abs > 1e-5 ] whileTrue:
+    [ d:=d*y/k/(k+1). s:=s+d. k:=k+2 ].
+    ^s.  "Результат: 0.479425533234127"
+
+" * * *  Обчислення значення числа, з якого починається рядок "
+
+"| string index answer c |"
+      string := '1234 is the number'.
+      answer := 0.
+      index := 1.
+      string size timesRepeat: [
+           c := string at: index.
+           (c < $0 or: [ c > $9 ] )
+               ifTrue: [^answer].
+           answer := answer * 10
+               + c asciiValue - $0 asciiValue.
+           index := index + 1].
+     ^answer.            "Результат: 1234"
+                  
+" * * *  Перетворення рядка літер "
+
+ "| string index c |"
+    string := String withAll: 'Now is THE time'.
+    index := 1.
+    string size timesRepeat: [
+         c := string at: index.
+         string
+             at: index
+             put:
+                 (c isVowel
+                     ifTrue: [ c asUppercase ]
+                     ifFalse: [ c asLowercase ] ).
+         index := index + 1 ].
+    ^string. "Результат: 'nOw Is thE tImE'"
+
+"{ Виконайте наступні приклади за допомогою <Do it> }"
+
+" * * *  Копіювання файла "
+" Вважається, що папка з лабораторними називається Labs і вкладена в папку Pharo "
+"| path input output |"
+     path := FileSystem workingDirectory asPath parent parent pathString, '/Labs/'.
+     path := path collect: [ :aChar | aChar == $/ ifTrue: [ $\ ] ifFalse: [ aChar ] ] from: 2 to: path size.
+     input := File openForReadFileNamed: path, 'Pharo-9_Lab2.txt'.
+     output := File openForWriteFileNamed: path, 'CopyPharoLab2.txt'.
+     [input atEnd]
+          whileFalse: [output nextPut: input next].
+     input close.
+     output close.
+
+"{ Екземплярами яких класів є створені в цьому прикладі об'єкти input, output ? }
+
+'Відповідь: input - екземпляр класу FileStream(для читання), а output - екземпляр класу FileStream(для запису)'
+
+ ------ ІТЕРАТОРИ
+
+{ Ітератор - метод перебору та опрацювання елементів колекції.     }
+{ Дію ітераторів продемонструємо на прикладі масиву. Use <Print it> }"
+" * * * "
+    Transcript cr.
+    #(2 4 8 16 32) do: [:x | x printOn: Transcript. Transcript tab].
+    Transcript show:' '; cr. "Print it -> Transcript, у Transcript виводить: 2	4	8	16	32	"
+" * * * "
+"| m a |"
+    a := #(3 7 5 0 2).
+    m:=a at: 1.
+    a do: [ :x | m := m max: x ].
+    ^m. "Результат: 7"
+" * * * "
+    #(0 2 4 6) collect: [ :x | x*x ] "Результат: #(0 4 16 36)"
+" * * * "
+    #(1 2 3 4 5 6 7 8 9) select: [ :x | x even ] "Результат: #(2 4 6 8)"
+" * * * "
+    #(1 2 3 4 5 6 7 8 9) reject: [ :x | x even ] "Результат: #(1 3 5 7 9)"
+" * * * "
+    #(1 2 4 8 16 32 64) detect: [ :x | x > 10 ] "Результат: 16"
+" * * * "
+    #(1 2 4 8 16 32 64) includes: 6 squared "Результат: false"
+" * * * "
+    #(1 2 3 4 5) inject:0 into: [ :s :x | s+x ] "15"
+    #(1 2 3 4 5) inject:1 into: [ :f :x | f*x ] "120"
+    #(1 2 3 4 5) inject:0 into: [ :m :x | m max:x ] "5"
+    #(1 2 3 4 5) inject:0 into: [ :m :x | m min:x ] "0"
+
+"{   Що робить кожен з ітераторів?   Які ще є ітератори в протоколі  }
+ { класу Collection? Наведіть власні приклади використання ітераторів }"
+"Відповідь: 
+do: Виконує блок для кожного елемента колекції.
+collect: Створює нову колекцію, де кожен елемент є результатом блоку.
+select: Вибирає елементи, що задовольняють умову блоку.
+reject: Вибирає елементи, що не задовольняють умову блоку.
+detect: Повертає перший елемент, що задовольняє умову блоку.
+includes: Перевіряє, чи колекція містить певний елемент.
+inject:into: Виконує агрегацію (акумуляцію) елементів колекції через блок.
+
+Які ще є ітератори в протоколі класу Collection?:
+anySatisfy: Повертає true, якщо хоча б один елемент задовольняє умову.
+allSatisfy: Повертає true, якщо всі елементи задовольняють умову.
+detect:ifNone: Як detect:, але повертає значення за замовчуванням, якщо нічого не знайдено.
+do:separatedBy: Виконує блок для кожного елемента з розділювачем між елементами.
+reject:collect: Комбінований варіант, можна спочатку відфільтрувати, потім обчислити.
+detect:ifNone: Повертає перший елемент, що задовольняє блок, або значення за замовчуванням.
+
+""Приклад 1: піднесення до квадрату всіх непарних чисел""
+#(1 2 3 4 5 6) select: [:x | x odd] collect: [:x | x*x].
+""Результат: #(1 9 25)""
+
+""Приклад 2: перевірка, чи всі числа більше нуля""
+#(2 4 6 8) allSatisfy: [:x | x > 0]. ""true""
+
+""Приклад 3: знайти перше число більше 10 або повернути -1""
+#(1 3 7 12 5) detect: [:x | x > 10] ifNone: [-1]. ""12""
+
+""Приклад 4: обчислити добуток всіх елементів""
+#(1 2 3 4 5) inject:1 into: [:prod :x | prod * x]. ""120""
+
+"
+
+
